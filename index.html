@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Heart in Augmented Reality</title>
+
+    <!-- A-Frame Library -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+    <!-- AR.js for Augmented Reality -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+
+    <!-- Three.js for rendering the 3D model -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+
+    <!-- FBX Loader for loading .fbx files -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/loaders/FBXLoader.js"></script>
+
+    <!-- Page styling -->
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        a-scene {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <!-- AR.js Scene -->
+    <a-scene embedded arjs>
+        <!-- Marker for AR -->
+        <a-marker preset="hiro">
+            <!-- Placeholder entity where the 3D model will be added -->
+            <a-entity id="3d-heart" position="0 0 0" rotation="0 0 0" scale="0.05 0.05 0.05"></a-entity>
+        </a-marker>
+        
+        <!-- AR Camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- JavaScript to Load 3D Model -->
+    <script>
+        // Get the placeholder entity in the AR marker
+        const heartEntity = document.getElementById("3d-heart");
+
+        // Initialize the FBX loader
+        const loader = new THREE.FBXLoader();
+
+        // Load the FBX model
+        loader.load('./heart/heart.fbx', (object) => {
+            // Load textures
+            const textureLoader = new THREE.TextureLoader();
+            const baseColor = textureLoader.load('./heart/hart_UV_low01_BaseColor.hart_UV_low_defaultMat.png');
+            const metalness = textureLoader.load('./heart/hart_UV_low01_Metalness.hart_UV_low_defaultMat.png');
+            const normalMap = textureLoader.load('./heart/hart_UV_low01_Normal.hart_UV_low_defaultMat.png');
+            const roughness = textureLoader.load('./heart/hart_UV_low01_Roughness.hart_UV_low_defaultMat.png');
+
+            // Traverse through the FBX object to set materials
+            object.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = new THREE.MeshStandardMaterial({
+                        map: baseColor,          // Base color texture
+                        metalnessMap: metalness, // Metalness texture
+                        normalMap: normalMap,    // Normal texture
+                        roughnessMap: roughness, // Roughness texture
+                    });
+                }
+            });
+
+            // Add the 3D object to the AR marker
+            heartEntity.object3D.add(object);
+        }, undefined, (error) => {
+            console.error("Error loading FBX model:", error);
+        });
+    </script>
+</body>
+</html>
