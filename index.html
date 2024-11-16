@@ -18,10 +18,11 @@
 </head>
 <body>
     <a-scene embedded arjs>
-        <!-- AR Marker -->
+        <!-- Marker -->
         <a-marker preset="hiro">
-            <!-- Placeholder for the 3D heart -->
-            <a-entity id="heart" position="0 0 0" scale="0.05 0.05 0.05"></a-entity>
+            <!-- 3D Heart -->
+            <a-entity id="heart" position="0 0 0" scale="0.05 0.05 0.05"
+                      gesture-handler></a-entity>
         </a-marker>
 
         <!-- Camera -->
@@ -29,13 +30,43 @@
     </a-scene>
 
     <script>
-        // Reference to the 3D heart entity
+        // Add gesture handler for moving, rotating, and zooming
+        AFRAME.registerComponent("gesture-handler", {
+            schema: {
+                enabled: { default: true },
+            },
+            init: function () {
+                this.handleGesture = this.handleGesture.bind(this);
+                this.el.sceneEl.addEventListener("touchstart", this.handleGesture);
+                this.el.sceneEl.addEventListener("touchmove", this.handleGesture);
+                this.el.sceneEl.addEventListener("wheel", this.handleGesture);
+            },
+            handleGesture: function (event) {
+                const model = this.el.object3D;
+
+                if (event.touches && event.touches.length === 1) {
+                    // Move
+                    const deltaX = event.touches[0].clientX - window.innerWidth / 2;
+                    const deltaY = event.touches[0].clientY - window.innerHeight / 2;
+                    model.position.set(deltaX / 2000, -deltaY / 2000, model.position.z);
+                } else if (event.touches && event.touches.length === 2) {
+                    // Rotate
+                    const deltaX = event.touches[0].clientX - event.touches[1].clientX;
+                    const deltaY = event.touches[0].clientY - event.touches[1].clientY;
+                    model.rotation.set(deltaY / 100, deltaX / 100, 0);
+                } else if (event.type === "wheel") {
+                    // Zoom
+                    model.scale.setScalar(
+                        Math.max(0.01, model.scale.x + event.deltaY / 5000)
+                    );
+                }
+            },
+        });
+
+        // Load FBX Model
         const heartEntity = document.getElementById("heart");
 
-        // Initialize FBXLoader
         const loader = new THREE.FBXLoader();
-
-        // Load the heart model
         loader.load('./heart/heart.fbx', (object) => {
             const textureLoader = new THREE.TextureLoader();
 
@@ -45,7 +76,7 @@
             const normalMap = textureLoader.load('./heart/hart_UV_low01_Normal.hart_UV_low_defaultMat.png');
             const roughness = textureLoader.load('./heart/hart_UV_low01_Roughness.hart_UV_low_defaultMat.png');
 
-            // Apply textures to the 3D model
+            // Apply textures
             object.traverse((child) => {
                 if (child.isMesh) {
                     child.material = new THREE.MeshStandardMaterial({
@@ -57,10 +88,10 @@
                 }
             });
 
-            // Add the model to the marker
+            // Attach model to heart entity
             heartEntity.object3D.add(object);
         }, undefined, (error) => {
-            console.error("Error loading the model:", error);
+            console.error("Error loading model:", error);
         });
     </script>
 </body>
