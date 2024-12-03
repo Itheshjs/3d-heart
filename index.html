@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR.js Example</title>
+  <title>Network Topologies in AR</title>
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
   <style>
@@ -12,53 +12,114 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      background-color: #f9f9f9;
+      background-color: #f4f4f9;
     }
     h1 {
       color: #333;
-      margin: 20px 0;
+      margin: 20px;
     }
-    #info {
+    .content {
       margin: 20px auto;
-      padding: 10px;
       max-width: 800px;
-      text-align: left;
-      border: 1px solid #ddd;
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    a-scene {
+    .ar-viewer {
       width: 100%;
       height: 400px;
-      margin: 0;
+      border: 2px solid #333;
+      margin-top: 10px;
+    }
+    .info {
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 800px;
+      text-align: left;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <h1>Augmented Reality with AR.js</h1>
-  <p>Point your camera at the Hiro marker to see the 3D model.</p>
+  <h1>Network Topologies E-Learning with AR</h1>
 
-  <!-- AR Scene -->
-  <a-scene embedded arjs>
-    <!-- Marker -->
-    <a-marker preset="hiro">
-      <!-- 3D Model -->
-      <a-box position="0 0.5 0" material="color: blue;"></a-box>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
-
-  <!-- Information Section -->
-  <div id="info">
-    <h2>How It Works</h2>
-    <p>This is a simple example of marker-based AR using AR.js. The blue box will appear on top of the Hiro marker when viewed through your device's camera.</p>
-    <p><strong>Steps:</strong></p>
-    <ol>
-      <li>Open this webpage on a mobile device or AR-supported browser.</li>
-      <li>Allow the browser to access your camera.</li>
-      <li>Point your camera at the Hiro marker.</li>
-    </ol>
-    <p>You can download the Hiro marker from <a href="https://github.com/jeromeetienne/ar.js/blob/master/three.js/examples/marker-training/examples/HIRO.jpg" target="_blank">here</a>.</p>
+  <div class="content">
+    <button class="btn" onclick="showTopology('star')">Star Topology</button>
+    <button class="btn" onclick="showTopology('bus')">Bus Topology</button>
+    <button class="btn" onclick="showTopology('ring')">Ring Topology</button>
   </div>
+
+  <!-- AR Viewer -->
+  <div class="ar-viewer">
+    <a-scene embedded arjs>
+      <a-marker id="marker" preset="hiro">
+        <a-entity id="model" position="0 0 0">
+          <!-- Initial model content will be dynamically updated -->
+        </a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+  </div>
+
+  <!-- Learning Content -->
+  <div class="info" id="info">
+    <h3>Learn About Network Topologies</h3>
+    <p>Click the buttons above to explore different network topologies.</p>
+  </div>
+
+  <script>
+    function showTopology(type) {
+      const info = document.getElementById('info');
+      const model = document.getElementById('model');
+
+      if (type === 'star') {
+        info.innerHTML = `
+          <h3>Star Topology</h3>
+          <p>The star topology connects all devices to a central hub. If the hub fails, the entire network is affected, but it is easy to expand and troubleshoot.</p>
+        `;
+        model.innerHTML = `
+          <a-box position="0 0.2 0" color="blue" scale="0.2 0.2 0.2"></a-box>
+          <a-sphere color="red" position="0.5 0 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="red" position="-0.5 0 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="red" position="0 0.5 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="red" position="0 -0.5 0" scale="0.1 0.1 0.1"></a-sphere>
+        `;
+      } else if (type === 'bus') {
+        info.innerHTML = `
+          <h3>Bus Topology</h3>
+          <p>The bus topology uses a single central cable to which all devices are connected. It is cost-effective but difficult to troubleshoot when the main cable fails.</p>
+        `;
+        model.innerHTML = `
+          <a-box position="0 0.1 0" color="green" scale="0.8 0.05 0.05"></a-box>
+          <a-sphere color="yellow" position="0.4 0.2 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="yellow" position="0 0.2 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="yellow" position="-0.4 0.2 0" scale="0.1 0.1 0.1"></a-sphere>
+        `;
+      } else if (type === 'ring') {
+        info.innerHTML = `
+          <h3>Ring Topology</h3>
+          <p>The ring topology connects devices in a closed loop. Data travels in one direction, making it simple but susceptible to failure if a single connection breaks.</p>
+        `;
+        model.innerHTML = `
+          <a-torus position="0 0.2 0" color="orange" radius="0.5" radius-tubular="0.05"></a-torus>
+          <a-sphere color="purple" position="0.5 0.2 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="purple" position="-0.5 0.2 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="purple" position="0 0.7 0" scale="0.1 0.1 0.1"></a-sphere>
+          <a-sphere color="purple" position="0 -0.3 0" scale="0.1 0.1 0.1"></a-sphere>
+        `;
+      }
+    }
+  </script>
 </body>
 </html>
