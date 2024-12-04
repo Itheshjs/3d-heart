@@ -1,3 +1,7 @@
+var markerArea = new ARjs.MarkerArea();
+  markerArea.enabled = true;
+
+
 const gridMarkers = ["marker0", "marker1", "marker2", "marker3"];
 const positions = {
   player: "marker5",
