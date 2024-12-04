@@ -3,20 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wumpus World Simulation</title>
+  <title>AR Wumpus World</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.0.1/aframe/build/aframe-ar.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Wumpus World Simulation</h1>
-  <div id="grid"></div>
-  <div id="controls">
-    <button onclick="moveAgent('up')">Move Up</button>
-    <button onclick="moveAgent('left')">Move Left</button>
-    <button onclick="moveAgent('right')">Move Right</button>
-    <button onclick="moveAgent('down')">Move Down</button>
-    <button onclick="grabGold()">Grab Gold</button>
-    <button onclick="restartGame()">Restart</button>
-  </div>
+  <h1>AR Wumpus World Simulation</h1>
+  <a-scene embedded arjs>
+    <!-- Define grid markers -->
+    <a-marker preset="custom" type="pattern" url="markers/marker0.patt" id="marker0">
+      <a-plane src="images/player.png" height="1" width="1" position="0 0 0"></a-plane>
+    </a-marker>
+
+    <a-marker preset="custom" type="pattern" url="markers/marker1.patt" id="marker1">
+      <a-plane src="images/gold.png" height="1" width="1" position="0 0 0"></a-plane>
+    </a-marker>
+
+    <a-marker preset="custom" type="pattern" url="markers/marker2.patt" id="marker2">
+      <a-plane src="images/pit.png" height="1" width="1" position="0 0 0"></a-plane>
+    </a-marker>
+
+    <a-marker preset="custom" type="pattern" url="markers/marker3.patt" id="marker3">
+      <a-plane src="images/wumpus.png" height="1" width="1" position="0 0 0"></a-plane>
+    </a-marker>
+
+    <!-- Camera -->
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <!-- Restart Button -->
+  <button id="restart-button">Restart Game</button>
 
   <script src="script.js"></script>
 </body>
