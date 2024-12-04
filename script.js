@@ -1,9 +1,9 @@
 const gridMarkers = ["marker0", "marker1", "marker2", "marker3"];
 const positions = {
-  player: "marker0",
-  gold: "marker1",
-  pit: "marker2",
-  wumpus: "marker3",
+  player: "marker5",
+  gold: "marker2",
+  pit: "marker3",
+  wumpus: "marker8",
 };
 
 // Randomize positions of the objects
